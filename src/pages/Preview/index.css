@@ -1,36 +1,67 @@
-.container{
+th {
+    letter-spacing: 2px;
+}
+
+td {
+    letter-spacing: 1px;
+}
+
+tbody td {
+    text-align: center;
+}
+
+tfoot th {
+    text-align: right;
+}
+
+tbody tr:nth-child(odd) {
+    background-color: #e4e4e4;
+  }
+  
+  tbody tr:nth-child(even) {
+    background-color: #bebebe;
+  }
+  
+
+.container {
     display: flex;
     flex-direction: column;
     margin: 24px auto;
     width: 100%;
 }
-.searchBar{
+
+.searchBar {
     display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: flex-end;
 }
-.searchBar .input{
+
+.searchBar .input {
     display: flex;
     flex-direction: column;
 }
-.searchBar .btn{
-    margin:0 12px;
+
+.searchBar .btn {
+    margin: 0 12px;
 }
-.table{
+
+.table {
     display: flex;
     justify-content: center;
     margin-top: 24px;
 }
-.loadingIcon{
+
+.loadingIcon {
     animation: rotate linear 2s infinite;
 }
 
 @keyframes rotate {
-    0%{
+    0% {
         transform: rotate(0);
     }
-    100%{
+
+    100% {
         transform: rotate(360deg);
     }
 }

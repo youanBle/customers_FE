@@ -1,9 +1,6 @@
 import React, { useState } from "react";
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { ReactComponent as LoadingLogp } from "../../loading.svg";
 import "./index.css";
-//import {request} from '../../utils/fetch'
 
 type CustomerVisitingProps = {
   storeId: string;
@@ -21,6 +18,7 @@ const Preview = () => {
   >([]);
   const [inputFileName, setInputFileName] = useState("");
   const [isPreview, setIsPreview] = useState(false);
+  const [showTableHeader, setShowTableHeader] = useState(false);
   const [isProcessed, setIsProcessed] = useState(false);
   const [isPreviewLoading, setIsPreviewLoading] = useState(false);
   const [isProcessLoading, setIsProcessLoading] = useState(false);
@@ -31,49 +29,29 @@ const Preview = () => {
 
   const handlePreviewClick = async () => {
     setIsPreview(true);
+    setShowTableHeader(true);
     const url = `http://127.0.0.1/custom_store_visiting/preview?path=${inputFileName}`;
-    const inital = {
-      method: "GET",
-      params: null,
-      body: null,
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      credentials: true,
-      responseType: "JSON",
-      cache: "no-cache",
-    };
     setIsPreviewLoading(true);
-    const res = await fetch(url)
+    await fetch(url)
       .then((response) => response.json())
       .then((data) => {
         setCustomerVisiting(data.data);
         setIsPreviewLoading(false);
       });
-    //const res = await request(url,{})
   };
 
   const handleProcessClick = async () => {
+    setShowTableHeader(true);
     const url = `http://127.0.0.1/custom_store_visiting/all/?path=${inputFileName}`;
-    const inital = {
-      method: "GET",
-      params: null,
-      body: null,
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      credentials: true,
-      responseType: "JSON",
-      cache: "no-cache",
-    };
-    setIsPreviewLoading(true);
-    const res = await fetch(url)
+    setIsProcessLoading(true);
+    await fetch(url)
       .then((response) => response.json())
       .then((data) => {
         setIsProcessed(true);
-        console.log(data);
         setCustomerVisiting(data);
-        setIsPreviewLoading(false);
+        setIsProcessLoading(false);
+      }).catch((err)=>{
+        throw new Error(err)
       });
   };
 
@@ -94,13 +72,13 @@ const Preview = () => {
         <div className="btns">
           <button
             className="btn previewBtn"
-            disabled={!inputFileName}
+            disabled={!inputFileName || isProcessLoading || isPreviewLoading}
             onClick={handlePreviewClick}
           >
             Preview
           </button>
           <button
-            disabled={!isPreview || !inputFileName}
+            disabled={!inputFileName || isProcessLoading || isPreviewLoading}
             className="btn processBtn"
             onClick={handleProcessClick}
           >
@@ -110,32 +88,40 @@ const Preview = () => {
       </div>
       <div className="table">
         {isPreviewLoading || isProcessLoading ? (
-          <LoadingLogp className="loadingIcon" style={{width:40, height:40}}/>
+          <LoadingLogp
+            className="loadingIcon"
+            style={{ width: 40, height: 40 }}
+          />
         ) : (
           <table>
-            <tr>
-              <th>StoreId</th>
-              <th>Customer_ID</th>
-              <th>Postal Code</th>
-              <th>Total Visit</th>
-              <th>Dollar Spend</th>
-              <th>Product Type</th>
-              {isProcessed && <th>Prizm Code</th>}
-            </tr>
-            {customerVisiting.length > 0 &&
-              customerVisiting.map((customer) => {
-                return (
-                  <tr key={customer.customerId}>
-                    <td>{customer.storeId}</td>
-                    <td>{customer.customerId}</td>
-                    <td>{customer.postalCode}</td>
-                    <td>{customer.totalVisit}</td>
-                    <td>{customer.dollarSpend}</td>
-                    <td>{customer.productType}</td>
-                    {isProcessed && <td>{customer.prizm}</td>}
-                  </tr>
-                );
-              })}
+            {showTableHeader && (
+              <tr>
+                <th>StoreId</th>
+                <th>Customer_ID</th>
+                <th>Postal Code</th>
+                <th>Total Visit</th>
+                <th>Dollar Spend</th>
+                <th>Product Type</th>
+                {isProcessed && <th>Prizm Code</th>}
+              </tr>
+            )}
+
+            <tbody>
+              {customerVisiting.length > 0 &&
+                customerVisiting.map((customer) => {
+                  return (
+                    <tr key={customer.customerId}>
+                      <td>{customer.storeId}</td>
+                      <td>{customer.customerId}</td>
+                      <td>{customer.postalCode}</td>
+                      <td>{customer.totalVisit}</td>
+                      <td>{customer.dollarSpend}</td>
+                      <td>{customer.productType}</td>
+                      {isProcessed && <td>{customer.prizm}</td>}
+                    </tr>
+                  );
+                })}
+            </tbody>
           </table>
         )}
       </div>
