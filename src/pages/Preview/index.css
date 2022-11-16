@@ -1,0 +1,36 @@
+.container{
+    display: flex;
+    flex-direction: column;
+    margin: 24px auto;
+    width: 100%;
+}
+.searchBar{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-end;
+}
+.searchBar .input{
+    display: flex;
+    flex-direction: column;
+}
+.searchBar .btn{
+    margin:0 12px;
+}
+.table{
+    display: flex;
+    justify-content: center;
+    margin-top: 24px;
+}
+.loadingIcon{
+    animation: rotate linear 2s infinite;
+}
+
+@keyframes rotate {
+    0%{
+        transform: rotate(0);
+    }
+    100%{
+        transform: rotate(360deg);
+    }
+}
